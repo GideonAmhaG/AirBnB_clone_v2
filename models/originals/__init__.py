@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-""" Initializes a variable storage to create a unique FileStorage
-instance """
+"""This module instantiates an object of class FileStorage"""
 from models.engine.file_storage import FileStorage
 
 

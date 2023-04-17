@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-""" module for Review class """
+""" Review module for the HBNB project """
 from models.base_model import BaseModel
 
 
 class Review(BaseModel):
-    """ class that inherits form BaseModel """
+    """ Review classto store review information """
     place_id = ""
     user_id = ""
     text = ""
