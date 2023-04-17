@@ -4,8 +4,10 @@ import uuid
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 import models
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
 
 Base = declarative_base()
+
 
 class BaseModel:
     """
@@ -13,6 +15,10 @@ class BaseModel:
 
     Defines all common attributes/methods for other classes
     """
+    id = Column(String(60), nullable=False, primary_key=True)
+    created_at = Column(DateTime(), nullable=False, default=datetime.now())
+    updated_at = Column(DateTime(), nullable=False, default=datetime.now())
+
     def __init__(self, *args, **kwargs):
         """
         init Function Docstring
