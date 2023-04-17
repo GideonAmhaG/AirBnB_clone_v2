@@ -32,37 +32,17 @@ class HBNBCommand(cmd.Cmd):
         """ an empty line + ENTER will not execute anything """
         pass
 
-    def do_create(self, line):
+    def do_create(self, class_name):
         """ creates a new instance, saves it, and prints id """
-        try:
-            if not line:
-                raise SyntaxError()
-            my_list = line.split(" ")
-
-            kwargs = {}
-            for i in range(1, len(my_list)):
-                key, value = tuple(my_list[i].split("="))
-                if value[0] == '"':
-                    value = value.strip('"').replace("_", " ")
-                else:
-                    try:
-                        value = eval(value)
-                    except (SyntaxError, NameError):
-                        continue
-                kwargs[key] = value
-
-            if kwargs == {}:
-                obj = eval(my_list[0])()
-            else:
-                obj = eval(my_list[0])(**kwargs)
-                storage.new(obj)
-            print(obj.id)
-            obj.save()
-
-        except SyntaxError:
+        cls_name = self.parseline(class_name)[0]
+        if cls_name is None:
             print("** class name missing **")
-        except NameError:
+        elif cls_name not in self.cls:
             print("** class doesn't exist **")
+        else:
+            new_obj = eval(cls_name)()
+            new_obj.save()
+            print(new_obj.id)
 
     def do_show(self, cls_and_id):
         """prints the str repr of an instance with class name and id"""
