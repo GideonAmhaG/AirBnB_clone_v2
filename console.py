@@ -32,7 +32,7 @@ class HBNBCommand(cmd.Cmd):
         """ an empty line + ENTER will not execute anything """
         pass
 
-    def do_create(self, class_name):
+    def do_create(self, line):
         """ creates a new instance, saves it, and prints id """
         try:
             if not line:
