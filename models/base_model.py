@@ -1,76 +1,43 @@
 #!/usr/bin/python3
-"""This module defines a base class for all models in our hbnb clone"""
-import uuid
+""" Module for BaseModel class """
+from uuid import uuid4
 from datetime import datetime
-from sqlalchemy.ext.declarative import declarative_base
 import models
 
-Base = declarative_base()
 
 class BaseModel:
-    """
-    BaseModel Class Docstring
-
-    Defines all common attributes/methods for other classes
-    """
+    """ defines all common attributes/methods for other classes """
     def __init__(self, *args, **kwargs):
-        """
-        init Function Docstring
-
-        Class Constructor
-        id: string - assignes a unique uuid when an\
-        instance is created
-        created_at: datetime - assign with the current\
-        datetime when an instance is created
-        updated_at: datetime - assign with the current\
-        datetime when an instance is created and it will\
-        be updated every time you change
-        """
+        """ Initilizing method """
         if kwargs:
-            id_exists = 0
-            created_at_exists = 0
             for key, value in kwargs.items():
-                if key != '__class__':
-                    if key in ['created_at', 'updated_at']:
-                        if key == "created_at":
-                            created_at_exists = 1
-                        if not isinstance(value, datetime):
-                            value = datetime.strptime(
-                                                    value,
-                                                    '%Y-%m-%dT%H:%M:%S.%f')
-                    if key == 'id':
-                        id_exists = 1
+                if key == "created_at" or key == "updated_at":
+                    setattr(self, key,
+                            datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f"))
+                elif key != "__class__":
                     setattr(self, key, value)
-            if id_exists == 0:
-                self.id = str(uuid.uuid4())
-            if created_at_exists == 0:
-                self.created_at = datetime.now()
         else:
-            self.id = str(uuid.uuid4())
+            self.id = str(uuid4())
             self.created_at = datetime.now()
-        self.save()
-
-    def __str__(self):
-        """Returns a string representation of the instance"""
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+            self.updated_at = self.created_at
+            models.storage.new(self)
 
     def save(self):
-        """
-        save Function Docstring
-
-        Return: Updates the public instance attribute\
-        updated_at with the current datetime
-        """
-        self.__dict__["updated_at"] = datetime.now()
+        """ updates the public instance attribute updated_at with the
+        current datetime """
+        self.updated_at = datetime.now()
         models.storage.save()
 
     def to_dict(self):
-        """Convert instance into dict format"""
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
-        dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        return dictionary
+        """ returns a dictionary containing all keys/values of __dict__
+        of the instance """
+        my_dict = dict(self.__dict__)
+        my_dict["__class__"] = self.__class__.__name__
+        my_dict["created_at"] = self.created_at.isoformat()
+        my_dict['updated_at'] = self.updated_at.isoformat()
+        return my_dict
+
+    def __str__(self):
+        """ allows print to be called on BaseModel object """
+        return "[{}] ({}) {}".format(self.__class__.__name__, self.id,
+                                     self.__dict__)
