@@ -8,6 +8,15 @@ import uuid
 from datetime import datetime
 import os
 import models
+from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
+from os import getenv
+
+if getenv('HBNB_TYPE_STORAGE') == 'db':
+    Base = declarative_base()
+else:
+    Base = object
 
 
 class BaseModel:
@@ -16,6 +25,11 @@ class BaseModel:
 
     Defines all common attributes/methods for other classes
     """
+    id = Column(String(60), primary_key=True, unique=True,
+                nullable=False)
+    created_at = Column(DateTime(), nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime(), nullable=False, default=datetime.utcnow())
+
     def __init__(self, *args, **kwargs):
         """
         init Function Docstring
@@ -66,6 +80,7 @@ class BaseModel:
         updated_at with the current datetime
         """
         self.__dict__["updated_at"] = datetime.now()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
@@ -77,3 +92,7 @@ class BaseModel:
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
         return dictionary
+
+    def delete(self):
+        """Deletes the current instance"""
+        models.storage.delete(self)
