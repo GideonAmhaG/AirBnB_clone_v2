@@ -1,13 +1,11 @@
 #!/usr/bin/python3
-"""
-Base Model Docstring
-
-"""
-
+"""This module defines a base class for all models in our hbnb clone"""
 import uuid
 from datetime import datetime
-import os
+from sqlalchemy.ext.declarative import declarative_base
 import models
+
+Base = declarative_base()
 
 
 class BaseModel:
@@ -16,6 +14,10 @@ class BaseModel:
 
     Defines all common attributes/methods for other classes
     """
+    id = Column(String(60), primary_key=True)
+    created_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow(), nullable=False)
+
     def __init__(self, *args, **kwargs):
         """
         init Function Docstring
@@ -29,6 +31,7 @@ class BaseModel:
         datetime when an instance is created and it will\
         be updated every time you change
         """
+
         if kwargs:
             id_exists = 0
             created_at_exists = 0
@@ -66,6 +69,7 @@ class BaseModel:
         updated_at with the current datetime
         """
         self.__dict__["updated_at"] = datetime.now()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
@@ -76,4 +80,9 @@ class BaseModel:
                           (str(type(self)).split('.')[-1]).split('\'')[0]})
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
+        dictionary.pop("_sa_instance_state", None)
         return dictionary
+
+    def delete(self):
+        """Delete the current instance from the storage"""
+        models.storage.delete(self)

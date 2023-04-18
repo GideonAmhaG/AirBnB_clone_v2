@@ -69,6 +69,7 @@ class BaseModel:
         updated_at with the current datetime
         """
         self.__dict__["updated_at"] = datetime.now()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
@@ -79,4 +80,9 @@ class BaseModel:
                           (str(type(self)).split('.')[-1]).split('\'')[0]})
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
+        dictionary.pop("_sa_instance_state", None)
         return dictionary
+
+    def delete(self):
+        """Delete the current instance from the storage"""
+        models.storage.delete(self)
