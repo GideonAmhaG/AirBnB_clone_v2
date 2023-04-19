@@ -6,7 +6,7 @@ from os import getenv
 from sqlalchemy import Column, String
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """ a class User that inherits from BaseModel """
     if getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = 'users'
