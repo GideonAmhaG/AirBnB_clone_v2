@@ -30,9 +30,11 @@ class DBStorage:
 
     def all(self, cls=None):
         """Query on the current database session"""
-        classes = {"City": City, "State": State, "User": User}
+        classes = {"City": City, "State": State, "User": User, "Place": Place,
+                   "Review": Review, "Amenity": Amenity}
         if cls is None:
-            return {obj.id: obj for cls in classes.values() for obj in self.__session.query(cls)}
+            return {obj.id: obj for cls in classes.values()
+                    for obj in self.__session.query(cls)}
         return {obj.id: obj for obj in self.__session.query(classes[cls])}
 
     def new(self, obj):
