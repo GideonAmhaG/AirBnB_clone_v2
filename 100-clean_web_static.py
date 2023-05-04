@@ -8,20 +8,13 @@ env.hosts = ["54.175.254.46", "18.210.20.195"]
 
 def do_clean(number=0):
     """Delete out-of-date archives"""
-    if int(number) == 0:
-        number = 1
-    else:
-        number = int(number)
-    archives = os.listdir("versions")
-    archives_sorted = sorted(archives)
-    archives_to_remove = archives_sorted[:-number]
+    number = 1 if int(number) == 0 else int(number)
+    archives = sorted(os.listdir("versions"))
+    [archives.pop() for i in range(number)]
     with lcd("versions"):
-        for archive in archives_to_remove:
-            local(f"rm {archive}")
-    archives = run("ls -tr /data/web_static/releases").split()
-    archives_filtered = [a for a in archives if "web_static_" in a]
-    archives_filtered_sorted = sorted(archives_filtered)
-    archives_to_remove = archives_filtered_sorted[:-number]
+        [local("rm ./{}".format(a)) for a in archives]
     with cd("/data/web_static/releases"):
-        for archive in archives_to_remove:
-            run(f"rm -rf {archive}")
+        archives = run("ls -tr").split()
+        archives = [a for a in archives if "web_static_" in a]
+        [archives.pop() for i in range(number)]
+        [run("rm -rf ./{}".format(a)) for a in archives]
