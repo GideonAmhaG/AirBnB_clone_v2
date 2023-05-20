@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"""Module for Place class"""
+"""module for Review class"""
 import models
 from models.base_model import BaseModel, Base
 from os import getenv
@@ -9,7 +9,7 @@ from sqlalchemy import Column, String, ForeignKey
 
 class Review(BaseModel, Base):
     """Review class"""
-    if getenv("HBNB_TYPE_STORAGE") == 'db':
+    if models.storage_t == 'db':
         __tablename__ = 'reviews'
         place_id = Column(String(60), ForeignKey('places.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
