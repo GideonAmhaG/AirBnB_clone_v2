@@ -1,18 +1,15 @@
-.footer {
-	align-items: center;
-	background-color: white;
-	border-top: 1px solid #CCCCCC;
-	display: flex;
-	height: 60px;
-	justify-content: center;
-	width: 100%;
+footer {
+  position: fixed;
+  bottom: 0;
+  height:60px;
+  width:100%;
+  border-top: 1px solid #CCCCCC;
+  background-color: white;
 }
 
-.footer-absolute {
-	bottom: 0;
-	position: absolute;
-}
-
-.footer-dynamic {
-	flex-shrink: 0;
+span.footer_placeholder {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%,-50%);
 }

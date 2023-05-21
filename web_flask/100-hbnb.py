@@ -3,8 +3,8 @@
 from flask import Flask, render_template, Markup
 from models import *
 from models import storage
+import sys
 app = Flask(__name__)
-
 
 @app.route("/hbnb", strict_slashes=False)
 def hbnb():
